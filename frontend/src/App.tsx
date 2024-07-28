@@ -11,7 +11,6 @@ function App() {
       const res = await fetch('/api/test', {
         method: 'GET'
       })
-      console.log('res', res)
       const data = await res.text()
 
       console.log('response', data)
@@ -21,7 +20,7 @@ function App() {
 
     void pingBackend()
   },[])
-
+  
   return (
     <>
       <div>

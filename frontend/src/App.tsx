@@ -1,10 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 
 function App() {
   const [count, setCount] = useState(0);
+
+
+  const pingBackend  = async ()=> {
+      const res = await fetch('/api/test', {
+        method: 'GET'
+      })
+      console.log('res', res)
+      const data = await res.text()
+
+      console.log('response', data)
+  }
+
+  useEffect(()=>{
+
+    void pingBackend()
+  },[])
 
   return (
     <>

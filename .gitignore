@@ -1,0 +1,17 @@
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Packages
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# OS
+.DS_Store
+
+# Bundles
+frontend/dist/
+backend/dist/

@@ -1,26 +1,24 @@
-import { useEffect, useState } from 'react';
-import './App.css';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
+import { useEffect, useState } from "react";
+import "./App.css";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
 
 function App() {
   const [count, setCount] = useState(0);
 
+  const pingBackend = async () => {
+    const res = await fetch("/api/test", {
+      method: "GET",
+    });
+    const data = await res.text();
 
-  const pingBackend  = async ()=> {
-      const res = await fetch('/api/test', {
-        method: 'GET'
-      })
-      const data = await res.text()
+    console.log("response", data);
+  };
 
-      console.log('response', data)
-  }
+  useEffect(() => {
+    void pingBackend();
+  }, []);
 
-  useEffect(()=>{
-
-    void pingBackend()
-  },[])
-  
   return (
     <>
       <div>
@@ -33,12 +31,16 @@ function App() {
       </div>
       <h1>Vite + React + Docker</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
+        <button onClick={() => setCount((count) => count + 1)}>
+          count is {count}
+        </button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
       </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
+      <p className="read-the-docs">
+        Click on the Vite and React logos to learn more
+      </p>
     </>
   );
 }

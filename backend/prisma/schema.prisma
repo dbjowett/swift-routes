@@ -1,6 +1,6 @@
 datasource db {
   provider = "postgresql"
-  url      = "postgres://postgres:postgres@database:5432/postgres-dev?schema=SCHEMA"
+  url =  env("DB_URL")
 }
 
 generator client {

@@ -32,3 +32,11 @@ docker compose -f compose.prod.yml up --build
     Database: PostgreSQL
 
 Runs on port 80 (localhost).
+
+### Required .env
+
+For development, create a .env file and paste in the in `DB_URL` from below.
+
+```
+DB_URL="postgres://postgres:postgres@localhost:5432/postgres-dev?schema=SCHEMA"
+```

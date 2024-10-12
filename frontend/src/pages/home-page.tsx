@@ -2,47 +2,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { QuickActions } from '@/components/ui/quick-actions';
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect } from 'react';
-
-interface Customer {
-  id: number;
-  name: string;
-  routes: number[];
-  drivers: number[];
-}
-
-interface Addresses {
-  id: string;
-  customerId: string;
-  street: string;
-  city: string;
-  postalCode: string;
-}
 
 export const HomePage = () => {
   const navigate = useNavigate();
-
-  const customers: Customer[] = [
-    {
-      id: 10,
-      name: "Bill's Cycle",
-      routes: [],
-      drivers: [],
-    },
-  ];
-
-  const pingBackend = async () => {
-    const res = await fetch('/api/', {
-      method: 'GET',
-    });
-    const data = await res.text();
-
-    console.log('response', data);
-  };
-
-  useEffect(() => {
-    void pingBackend();
-  }, []);
 
   return (
     <div className="pt-2 py-8 flex gap-3 flex-col">

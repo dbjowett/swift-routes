@@ -1,3 +1,4 @@
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ReloadIcon } from '@radix-ui/react-icons';
@@ -16,6 +17,7 @@ const formSchema = z.object({
   license: z.string().min(2, {
     message: "Driver's license must be at least 2 characters.",
   }),
+  additionalInfo: z.string(),
 });
 
 export const DriverModal = ({ closeModal }: { closeModal: () => void }) => {
@@ -44,6 +46,7 @@ export const DriverModal = ({ closeModal }: { closeModal: () => void }) => {
     defaultValues: {
       name: '',
       license: '',
+      additionalInfo: '',
     },
   });
 
@@ -75,6 +78,19 @@ export const DriverModal = ({ closeModal }: { closeModal: () => void }) => {
               <FormLabel>Driver's License</FormLabel>
               <FormControl>
                 <Input placeholder="Please enter the driver's license" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="additionalInfo"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Additional Info (optional)</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Please enter any additional information for this driver" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

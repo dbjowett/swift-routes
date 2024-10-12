@@ -7,7 +7,7 @@ export class DriverController {
   constructor(private readonly driverService: DriverService) {}
 
   @Post('/')
-  createDriver(@Body() createDriverDto: CreateDriverDto): string {
+  createDriver(@Body() createDriverDto: CreateDriverDto) {
     return this.driverService.createDriver(createDriverDto);
   }
 }

@@ -1,90 +1,61 @@
-import { useToast } from '@/hooks/use-toast';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { ReloadIcon } from '@radix-ui/react-icons';
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { useQuery } from '@tanstack/react-query';
+import { Check, Plus } from 'lucide-react';
+import { useState } from 'react';
 import { Button } from './button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './form';
-import { Input } from './input';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './command';
+import { Popover, PopoverContent, PopoverTrigger } from './popover';
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Driver's name must be at least 2 characters.",
-  }),
-  license: z.string().min(2, {
-    message: "Driver's license must be at least 2 characters.",
-  }),
-});
+const searchPlaces = async (query: string) => {
+  const response = await fetch(`/api/places?query=${encodeURIComponent(query)}`);
+  if (!response.ok) throw new Error('Failed to fetch places');
+  return response.json();
+};
 
 export const CustomerModal = ({ closeModal }: { closeModal: () => void }) => {
-  const { toast } = useToast();
-  const mutation = useMutation({
-    mutationFn: async (values: z.infer<typeof formSchema>) => {
-      return axios.post('/api/driver/', values);
-    },
-    onSuccess: () => {
-      closeModal();
-      toast({
-        title: '🎉 Driver Added Successfully!',
-        description: `Driver with the name ${form.getValues('name')} and licence ${form.getValues('license')} created.`,
-      });
-    },
-    onError: () => {
-      toast({
-        title: 'Something went wrong!',
-        description: `Please try again later.`,
-      });
-    },
-  });
+  const [searchQuery, setSearchQuery] = useState('');
+  const [open, setOpen] = useState<boolean>(false);
+  const [selectedPlace, setSelectedPlace] = useState<{ name: string; id: number }>();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      license: '',
-    },
+  const {
+    data: places,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['places'],
+    queryFn: () => searchPlaces(searchQuery),
+    enabled: searchQuery.length > 2,
   });
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    mutation.mutate(values);
-  }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Driver's Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Please enter the driver's name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="license"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Driver's License</FormLabel>
-              <FormControl>
-                <Input placeholder="Please enter the driver's license" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button disabled={mutation.isPending} type="submit">
-          {mutation.isPending && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
-          Submit
-        </Button>
-      </form>
-    </Form>
+    <div>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button role="combobox" aria-expanded={open} className=" w-full ">
+            <Plus className="mr-2 h-4 w-4" />
+            Click to search
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[400px] p-0">
+          <Command>
+            <CommandInput placeholder="Search for a place..." value={searchQuery} onValueChange={setSearchQuery} />
+            <CommandList>
+              <CommandEmpty>No places found.</CommandEmpty>
+              <CommandGroup>
+                {isLoading && <CommandItem>Loading...</CommandItem>}
+                {error && <CommandItem>Error: {(error as Error).message}</CommandItem>}
+                {places?.map((place) => (
+                  <CommandItem key={place.id} onSelect={() => setSelectedPlace(place)}>
+                    <Check className={`mr-2 h-4 w-4 ${selectedPlace?.id === place.id ? 'opacity-100' : 'opacity-0'}`} />
+                    {place.name}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+
+      {/* FORM start*/}
+    </div>
   );
 };

@@ -25,18 +25,18 @@ export const QuickActions = () => {
       body: <DriverModal closeModal={closeModal} />,
     },
     {
-      modalKey: 'route',
-      icon: <Route className="h-5 w-5 mr-2" />,
-      title: 'Add Route',
-      subtitle: 'Fill in the route details here.',
-      body: <RouteModal closeModal={closeModal} />,
-    },
-    {
       modalKey: 'customer',
       icon: <Map className="h-5 w-5 mr-2" />,
       title: 'Add Customer',
       subtitle: 'Fill in customer data here',
       body: <CustomerModal closeModal={closeModal} />,
+    },
+    {
+      modalKey: 'route',
+      icon: <Route className="h-5 w-5 mr-2" />,
+      title: 'Add Route',
+      subtitle: 'Fill in the route details here.',
+      body: <RouteModal closeModal={closeModal} />,
     },
   ] as const;
 

@@ -1,10 +1,29 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { QuickActions } from '@/components/ui/quick-actions';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import axios from 'axios';
 
 export const HomePage = () => {
   const navigate = useNavigate();
+
+  const fetchDrivers = async () => {
+    const { data } = await axios.get('/api/driver');
+    return data;
+  };
+
+  const useFetchDrivers = () => {
+    return useQuery({
+      queryKey: ['drivers'],
+      queryFn: fetchDrivers,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    });
+  };
+
+  const { data, isLoading, isError, error } = useFetchDrivers();
+
+  console.log(data);
 
   return (
     <div className="pt-2 py-8 flex gap-3 flex-col">

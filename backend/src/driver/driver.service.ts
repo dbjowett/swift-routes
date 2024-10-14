@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
 
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateDriverDto } from './dto/create-driver.dto';
 
 @Injectable()
 export class DriverService {
-  // constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {}
 
   createDriver(data: CreateDriverDto) {
-    console.log('Data', data);
-    return 'hello';
-    // return this.prisma.driver.create({ data });
+    return this.prisma.driver.create({ data });
+  }
+
+  getAllDrivers() {
+    return this.prisma.driver.findMany();
   }
 }

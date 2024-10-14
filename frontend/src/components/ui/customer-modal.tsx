@@ -4,8 +4,12 @@ import { useState } from 'react';
 import { Button } from './button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './command';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
-
-const searchPlaces = async (query: string) => {
+export interface Place {
+  place_id: string;
+  name: string;
+  formatted_address: string;
+}
+const searchPlaces = async (query: string): Promise<Place[]> => {
   const response = await fetch(`/api/places?query=${encodeURIComponent(query)}`);
   if (!response.ok) throw new Error('Failed to fetch places');
   return response.json();
@@ -14,7 +18,7 @@ const searchPlaces = async (query: string) => {
 export const CustomerModal = ({ closeModal }: { closeModal: () => void }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [open, setOpen] = useState<boolean>(false);
-  const [selectedPlace, setSelectedPlace] = useState<{ name: string; id: number }>();
+  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
   const {
     data: places,
@@ -25,6 +29,8 @@ export const CustomerModal = ({ closeModal }: { closeModal: () => void }) => {
     queryFn: () => searchPlaces(searchQuery),
     enabled: searchQuery.length > 2,
   });
+
+  console.log(places);
 
   return (
     <div>
@@ -44,8 +50,8 @@ export const CustomerModal = ({ closeModal }: { closeModal: () => void }) => {
                 {isLoading && <CommandItem>Loading...</CommandItem>}
                 {error && <CommandItem>Error: {(error as Error).message}</CommandItem>}
                 {places?.map((place) => (
-                  <CommandItem key={place.id} onSelect={() => setSelectedPlace(place)}>
-                    <Check className={`mr-2 h-4 w-4 ${selectedPlace?.id === place.id ? 'opacity-100' : 'opacity-0'}`} />
+                  <CommandItem key={place.place_id} onSelect={() => setSelectedPlace(place)}>
+                    <Check className={`mr-2 h-4 w-4 ${selectedPlace?.place_id === place.place_id ? 'opacity-100' : 'opacity-0'}`} />
                     {place.name}
                   </CommandItem>
                 ))}
